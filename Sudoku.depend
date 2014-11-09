@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1343258871 source:c:\users\suril\sudoku\sudoku\main.cpp
+	<iostream>
+	"Sudoku.hpp"
+
+1343258871 c:\users\suril\sudoku\sudoku\sudoku.hpp
+	<iostream>
+
+1343258304 source:c:\users\suril\sudoku\sudoku\sudoku.cpp
+	<iostream>
+	"Sudoku.hpp"
+
