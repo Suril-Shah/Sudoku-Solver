@@ -1,14 +1,23 @@
+/*
+ *Project started Feb. 2012.
+ *This application was created to imitate how a person would solve a
+ *sudoku puzzle. For this reason, algorithms were based off of how
+ *someone would eliminate numbers one by one while thry search through
+ *the 9 rows, columns, and cells. So far 6 algorithms have been implemented.
+ */
+
 #include <iostream>
 #include "Sudoku.hpp"
 using namespace std;
 
-//-----------------------------------------------------------------------------
 int main ()
 {
+    /*
+     *x/y/cel are booleans used quite alot in determining
+     *if a number is in a particular location.
+     */
     bool x = false, y = false, cel = false;
-    int truecount=0, truenum;
     int so [9][9] = {
-
 
         /*
         8,0,0, 4,0,6, 0,0,7,
@@ -23,8 +32,19 @@ int main ()
         0,0,1, 0,0,0, 0,0,0,
         3,0,0, 9,0,2, 0,0,5};*/
 
+        1,0,3, 4,5,6, 9,8,0,
+        9,4,5, 0,0,0, 0,0,0,
+        6,8,0, 0,0,0, 0,0,0,
 
-        0,0,0, 7,8,0, 0,0,2,
+        0,1,0, 0,0,0, 0,0,0,
+        0,3,0, 0,0,0, 0,0,0,
+        0,5,0, 0,0,0, 0,0,0,
+
+        0,6,0, 0,0,0, 0,0,0,
+        0,9,0, 0,0,0, 0,0,0,
+        0,0,0, 0,0,0, 0,0,0};
+
+        /*0,0,0, 7,8,0, 0,0,2,
         0,0,8, 0,0,0, 9,4,0,
         0,0,0, 0,3,0, 0,0,0,
 
@@ -34,46 +54,55 @@ int main ()
 
         0,4,2, 0,0,0, 0,5,7,
         0,0,3, 0,4,0, 0,6,0,
-        0,0,0, 6,0,0, 8,0,0};//25. solved.
+        0,0,0, 6,0,0, 8,0,0};//25. solved.*/
 
-	/*for (int y = 0; y < 9; y ++ )
-		for (int x = 0; x < 9; x ++ )
-			cin >> so[y][x];*/
-
+    //Display the unsolved puzzle initially.
 	displays(so);
 
-	for (int po = 0; po < 15; po ++ )//do
+	for (int po = 0; po < 1; po ++ )//Run set of algorithms 15 times.
 	{
 		for (int posy = 0; posy < 9; posy ++ )
 		{
-			for (int posx = 0; posx < 9; posx ++ )//go through each cell
+			for (int posx = 0; posx < 9; posx ++ )//Go through each cell in the puzzle.
 			{
-
-                //SIMPLE, FILLING IN THE BLANK ALG///////////////  WORKS
-				if(so[posy][posx]==0)//if cell is blank
+                /*
+                 *Simple filling in the blank algorithm. It will see if a
+                 *particular position is the only blank in its row/column/cell.
+                 *If there ar mulitple numbers that can go in that position,
+                 *the position will remain blank.
+                 *Works as expected.
+                 */
+                //If the particular position is blank, try to fill it.
+				if(so[posy][posx] == 0)
 				{
-					for (int n = 1; n < 10 && truecount < 2; n ++ )//test each number for that blank cell
+				    int posibilities = 0, truenum;
+
+				    //Test each number for that blank cell.
+				    //Stop if we find 2 numbers that can fit.
+					for (int num = 1; num <= 9 && posibilities < 2; num ++ )
 					{
-						position (so, n, posy, posx, y,  x,  cel);
+						position (so, num, posy, posx, y,  x, cel);
 
 						if (check(y,x,cel))
 						{
-							truecount+=1;
-							truenum = n;
+						    //Incrment the posibilites counter, and save the number.
+							posibilities+=1;
+							truenum = num;
 						}
 
+                        //Reset.
 						x= false; y=false; cel=false;
 					}
-
-					if (truecount == 1)
+                    //As long as only one number fits into this blank, fill it in.
+					if (posibilities == 1)
 						so[posy][posx]=truenum;
 
-					truecount = 0;
+                    //Reset.
+					posibilities = 0;
 				}
-				//////////////////////////////////////////////////////////
 
 				//////////////Filling in the blank of a cell///////////////// WORKS
-                if(so[posy][posx]==0)//if cell is blank
+                if(so[posy][posx]==0)//If the position is still blank, try next algo.
                 {
 					bool LastCel, celtest;
 					ifonlyZeroinCEL (so, posy, posx, LastCel);
@@ -96,7 +125,7 @@ int main ()
                 //////////////////////////////////////////////////////////////
 
                 /////////////////////FILL IN THE BLANK OF ROW////////////////// WORKS
-                if(so[posy][posx]==0)//if cell is blank
+                if(so[posy][posx]==0)//If the position is still blank, try next algo.
                 {
 					bool LastCel, celtest;
 					ifonlyZeroinY  (so, posy, posx, LastCel);
@@ -119,7 +148,7 @@ int main ()
                 //////////////////////////////////////////////////////////
 
                 /////////////////////FILL IN THE BLANK OF COL//////////////////WORKS
-                if(so[posy][posx]==0)//if cell is blank
+                if(so[posy][posx]==0)//If the position is still blank, try next algo.
                 {
 					bool LastCel, celtest;
 					ifonlyZeroinX  (so, posy, posx, LastCel);
@@ -142,7 +171,7 @@ int main ()
                 //////////////////////////////////////////////////////////
 
 				///////////////////FENCED IN NUMBER ALG//////////////// WORKS
-				if(so[posy][posx]==0)//if cell is blank
+				if(so[posy][posx]==0)//If the position is still blank, try next algo.
 				{
                     int a = posy%3;
                     int b = posx%3;
@@ -174,7 +203,7 @@ int main ()
                 //////////////////////////////////////////////////////////
 
                 ///////////////////FENCED/BOXED IN NUMBER ALG////////////////WORKS
-				if(so[posy][posx]==0)//if cell is blank
+				if(so[posy][posx]==0)//If the position is still blank, try next algo.
 				{
                     int a = posy%3;
                     int b = posx%3;
@@ -199,27 +228,6 @@ int main ()
 						{
 							if (x1)
 							{
-                                /*if (m[posy+(-2*a + a/2 +1)][posx+(-2*b + b/2 +1)] == num ||
-		m[posy+(-2*a + a/2 +1)][posx+(-b -b/2 +2)] == num ||
-		m[posy+(-a -a/2 +2)][posx+(-2*b + b/2 +1)] == num ||
-		m[posy+(-a -a/2 +2)][posx+(-b -b/2 +2)] == num ||
-
-		m[posy+ (0)][posx+ (-b -b/2 +2)] == num ||
-				//(m[posy+ (0)][posx+ (-b -b/2 +2)] != num &&
-				// m[posy+ (0)][posx+ (-b -b/2 +2)] != 0) ||
-		m[posy+ (0)][posx+ (-2*b + b/2 +1)] == num ||
-			   //(m[posy+ (0)][posx+ (-2*b + b/2 +1)] != num &&
-				// m[posy+ (0)][posx+ (-2*b + b/2 +1)] != 0) ||
-		m[posy+ (-2*a + a/2 +1)][posx+ (0)] == num ||
-				//(m[posy+ (-2*a + a/2 +1)][posx+ (0)] != num &&
-				// m[posy+ (-2*a + a/2 +1)][posx+ (0)] != 0) ||
-		m[posy+ (-a -a/2 +2)][posx+ (0)] == num  )
-                                {
-
-					                {
-							            so[posy][posx] = num;
-							        }
-							    } */
 								if (x2)
 								{
 									if (so[posy+(0)][posx+ (-b -b/2 +2)] != 0 &&
@@ -283,17 +291,15 @@ int main ()
 							}
                         }
 
-
 						cel1=false; y1=false; y2=false; x1=false; x2=false;
                     }
                 }
                 //////////////////////////////////////////////////////////
-
 			}
 		}
-    }//while(SearchArrayForZero(so));
+    }
 
-
+    //Display solved puzzle.
 	displays(so);
 
     cout << "\n\n";
