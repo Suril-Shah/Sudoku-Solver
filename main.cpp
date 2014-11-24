@@ -32,7 +32,7 @@ int main ()
         0,0,1, 0,0,0, 0,0,0,
         3,0,0, 9,0,2, 0,0,5};*/
 
-        1,0,3, 4,5,6, 9,8,0,
+        /*3,0,1, 4,5,6, 9,8,0,
         9,4,5, 0,0,0, 0,0,0,
         6,8,0, 0,0,0, 0,0,0,
 
@@ -40,11 +40,11 @@ int main ()
         0,3,0, 0,0,0, 0,0,0,
         0,5,0, 0,0,0, 0,0,0,
 
-        0,6,0, 0,0,0, 0,0,0,
-        0,9,0, 0,0,0, 0,0,0,
-        0,0,0, 0,0,0, 0,0,0};
+        1,6,0, 0,0,0, 0,0,0,
+        5,9,3, 0,0,0, 0,0,0,
+        4,0,8, 0,0,0, 0,0,0};*/
 
-        /*0,0,0, 7,8,0, 0,0,2,
+        0,0,0, 7,8,0, 0,0,2,
         0,0,8, 0,0,0, 9,4,0,
         0,0,0, 0,3,0, 0,0,0,
 
@@ -54,12 +54,12 @@ int main ()
 
         0,4,2, 0,0,0, 0,5,7,
         0,0,3, 0,4,0, 0,6,0,
-        0,0,0, 6,0,0, 8,0,0};//25. solved.*/
+        0,0,0, 6,0,0, 8,0,0};//25. solved.
 
     //Display the unsolved puzzle initially.
 	displays(so);
 
-	for (int po = 0; po < 1; po ++ )//Run set of algorithms 15 times.
+	for (int po = 0; po < 6; po ++ )//Run set of algorithms 15 times.
 	{
 		for (int posy = 0; posy < 9; posy ++ )
 		{
@@ -70,6 +70,13 @@ int main ()
                  *particular position is the only blank in its row/column/cell.
                  *If there ar mulitple numbers that can go in that position,
                  *the position will remain blank.
+                 *
+                 *Test each number for that blank cell.
+                 *Stop if we find 2 numbers that can fit.
+                 *Ideally, we only want 1 possible solution,
+                 *but if we find 2, we have to stop because
+                 *this algorithm won't work.
+                 *
                  *Works as expected.
                  */
                 //If the particular position is blank, try to fill it.
@@ -77,19 +84,18 @@ int main ()
 				{
 				    int posibilities = 0, truenum;
 
-				    //Test each number for that blank cell.
-				    //Stop if we find 2 numbers that can fit.
+				    //Try each number from 1 to 9; stop if we have more than one solution.
 					for (int num = 1; num <= 9 && posibilities < 2; num ++ )
 					{
 						position (so, num, posy, posx, y,  x, cel);
 
 						if (check(y,x,cel))
 						{
-						    //Incrment the posibilites counter, and save the number.
+						    //Incrment the posibilites counter, and save the number
+						    //if it fits in this blank spot.
 							posibilities+=1;
 							truenum = num;
 						}
-
                         //Reset.
 						x= false; y=false; cel=false;
 					}
@@ -100,75 +106,6 @@ int main ()
                     //Reset.
 					posibilities = 0;
 				}
-
-				//////////////Filling in the blank of a cell///////////////// WORKS
-                if(so[posy][posx]==0)//If the position is still blank, try next algo.
-                {
-					bool LastCel, celtest;
-					ifonlyZeroinCEL (so, posy, posx, LastCel);
-
-					if (LastCel)//if it is the only blank space in a cell
-					{
-						for (int num = 1; num < 10; num ++)
-						{
-							searchfullCEL (so, num, posy, posx, celtest);
-							if (!celtest)//if num not in cell
-							{
-								so[posy][posx] = num;
-							}
-							celtest = false;
-						}
-					}
-
-					LastCel = false;
-                }
-                //////////////////////////////////////////////////////////////
-
-                /////////////////////FILL IN THE BLANK OF ROW////////////////// WORKS
-                if(so[posy][posx]==0)//If the position is still blank, try next algo.
-                {
-					bool LastCel, celtest;
-					ifonlyZeroinY  (so, posy, posx, LastCel);
-
-					if (LastCel)//if it is the only blank space in a cell
-					{
-						for (int num = 1; num < 10; num ++)
-						{
-							searchY(so, num, posy, posx, celtest);
-							if (!celtest)//if num not in cell
-							{
-								so[posy][posx] = num;
-							}
-							celtest = false;
-						}
-					}
-
-					LastCel = false;
-                }
-                //////////////////////////////////////////////////////////
-
-                /////////////////////FILL IN THE BLANK OF COL//////////////////WORKS
-                if(so[posy][posx]==0)//If the position is still blank, try next algo.
-                {
-					bool LastCel, celtest;
-					ifonlyZeroinX  (so, posy, posx, LastCel);
-
-					if (LastCel)//if it is the only blank space in a cell
-					{
-						for (int num = 1; num < 10; num ++)
-						{
-							searchX(so, num, posy, posx, celtest);
-							if (!celtest)//if num not in cell
-							{
-								so[posy][posx] = num;
-							}
-							celtest = false;
-						}
-					}
-
-					LastCel = false;
-                }
-                //////////////////////////////////////////////////////////
 
 				///////////////////FENCED IN NUMBER ALG//////////////// WORKS
 				if(so[posy][posx]==0)//If the position is still blank, try next algo.
@@ -308,3 +245,79 @@ int main ()
 	return 0;
 }
 
+//NOT IMPORTANT FUNCTIONS:
+//				//////////////Filling in the blank of a cell///////////////// WORKS
+//				/*
+//                 *Another simpel filling in the blank
+//                 *
+//                 *
+//				 */
+//                //If the position is still blank, try next algo.
+//                if(so[posy][posx]==0)
+//                {
+//					bool LastCel, celtest;
+//					ifonlyZeroinCEL (so, posy, posx, LastCel);
+//
+//					if (LastCel)//if it is the only blank space in a cell
+//					{
+//						for (int num = 1; num < 10; num ++)
+//						{
+//							searchfullCEL (so, num, posy, posx, celtest);
+//							if (!celtest)//if num not in cell
+//							{
+//								so[posy][posx] = num;
+//							}
+//							celtest = false;
+//						}
+//					}
+//
+//					LastCel = false;
+//                }
+//                //////////////////////////////////////////////////////////////
+//
+//                /////////////////////FILL IN THE BLANK OF ROW////////////////// WORKS
+//                if(so[posy][posx]==0)//If the position is still blank, try next algo.
+//                {
+//					bool LastCel, celtest;
+//					ifonlyZeroinY  (so, posy, posx, LastCel);
+//
+//					if (LastCel)//if it is the only blank space in a cell
+//					{
+//						for (int num = 1; num < 10; num ++)
+//						{
+//							searchY(so, num, posy, posx, celtest);
+//							if (!celtest)//if num not in cell
+//							{
+//								so[posy][posx] = num;
+//							}
+//							celtest = false;
+//						}
+//					}
+//
+//					LastCel = false;
+//                }
+//                //////////////////////////////////////////////////////////
+//
+//                /////////////////////FILL IN THE BLANK OF COL//////////////////WORKS
+//                if(so[posy][posx]==0)//If the position is still blank, try next algo.
+//                {
+//					bool LastCel, celtest;
+//					ifonlyZeroinX  (so, posy, posx, LastCel);
+//
+//					if (LastCel)//if it is the only blank space in a cell
+//					{
+//						for (int num = 1; num < 10; num ++)
+//						{
+//							searchX(so, num, posy, posx, celtest);
+//							if (!celtest)//if num not in cell
+//							{
+//								so[posy][posx] = num;
+//							}
+//							celtest = false;
+//						}
+//					}
+//
+//					LastCel = false;
+//                }
+//                //////////////////////////////////////////////////////////
+//
