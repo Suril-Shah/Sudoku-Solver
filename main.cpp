@@ -32,19 +32,19 @@ int main ()
         0,0,1, 0,0,0, 0,0,0,
         3,0,0, 9,0,2, 0,0,5};*/
 
-        /*3,0,1, 4,5,6, 9,8,0,
-        9,4,5, 0,0,0, 0,0,0,
-        6,8,0, 0,0,0, 0,0,0,
+        0,6,5, 0,0,0, 0,0,0,
+        0,0,2, 0,0,0, 0,0,0,
+        0,1,4, 0,0,0, 0,0,0,
 
-        0,1,0, 0,0,0, 0,0,0,
-        0,3,0, 0,0,0, 0,0,0,
-        0,5,0, 0,0,0, 0,0,0,
+        0,0,0, 0,0,0, 0,0,0,
+        0,0,0, 0,0,0, 0,0,0,
+        0,0,0, 0,0,0, 0,0,0,
 
-        1,6,0, 0,0,0, 0,0,0,
-        5,9,3, 0,0,0, 0,0,0,
-        4,0,8, 0,0,0, 0,0,0};*/
+        0,0,0, 0,0,0, 0,0,0,
+        3,0,0, 0,0,0, 0,0,0,
+        0,0,0, 0,0,0, 0,0,0};
 
-        0,0,0, 7,8,0, 0,0,2,
+        /*0,0,0, 7,8,0, 0,0,2,
         0,0,8, 0,0,0, 9,4,0,
         0,0,0, 0,3,0, 0,0,0,
 
@@ -54,12 +54,12 @@ int main ()
 
         0,4,2, 0,0,0, 0,5,7,
         0,0,3, 0,4,0, 0,6,0,
-        0,0,0, 6,0,0, 8,0,0};//25. solved.
+        0,0,0, 6,0,0, 8,0,0};//25. solved.*/
 
     //Display the unsolved puzzle initially.
 	displays(so);
 
-	for (int po = 0; po < 6; po ++ )//Run set of algorithms 15 times.
+	for (int po = 0; po < 6; po ++ )//Run set of algorithms 6 times.
 	{
 		for (int posy = 0; posy < 9; posy ++ )
 		{
@@ -93,34 +93,50 @@ int main ()
 						{
 						    //Incrment the posibilites counter, and save the number
 						    //if it fits in this blank spot.
-							posibilities+=1;
+							posibilities += 1;
 							truenum = num;
 						}
                         //Reset.
-						x= false; y=false; cel=false;
+						x = false; y = false; cel = false;
 					}
                     //As long as only one number fits into this blank, fill it in.
 					if (posibilities == 1)
-						so[posy][posx]=truenum;
+						so[posy][posx] = truenum;
 
                     //Reset.
 					posibilities = 0;
 				}
 
-				///////////////////FENCED IN NUMBER ALG//////////////// WORKS
-				if(so[posy][posx]==0)//If the position is still blank, try next algo.
+				/*
+				 *If a particular number being tested for a blank
+				 *cannot be found within its 3x3 cell, but
+				 *it can be found in both adjacent rows
+				 *and both adjacent columns to the blank, then
+				 *that particular number has to fill in that blank.
+				 *
+				 *The number is essentially "fenced-in".
+				 *
+				 *Works as expected.
+				 */
+                //If the position is still blank, try next algo.
+				if(so[posy][posx] == 0)
 				{
+				    //This gives us the blank's relative position within the 3x3 cell.
                     int a = posy%3;
                     int b = posx%3;
+
                     bool y1, y2, x1, x2, cel1;
 
-                    for (int num = 1; num < 10; num ++ )//test each number for that blank cell
+                    //Try each number from 1 to 9.
+                    for (int num = 1; num <= 9; num ++)
 					{
 						searchfullCEL (so, num, posy, posx, cel1);
 
+                        //Test first adjacent column and row.
 						searchY (so, num, posy+(-2*a + a/2 +1), posx+(-2*b + b/2 +1), y1);
 						searchX (so, num, posy+(-2*a + a/2 +1), posx+(-2*b + b/2 +1), x1);
 
+                        //Test second adjacent column and row.
 						searchY (so, num, posy+(-2*a + a/2 +1), posx+(-b -b/2 +2), y2);
 						//searchX (so, num, posy+(-2*a + a/2 +1), posx+(-b -b/2 +2), x1);
 
@@ -134,13 +150,20 @@ int main ()
 						{
 							 so[posy][posx] = num;
 						}
+
 						cel1=false; y1=false; y2=false; x1=false; x2=false;
                     }
                 }
-                //////////////////////////////////////////////////////////
 
-                ///////////////////FENCED/BOXED IN NUMBER ALG////////////////WORKS
-				if(so[posy][posx]==0)//If the position is still blank, try next algo.
+                /*
+                 *Similar to the previous algo, except that this one
+                 *looks at other adjacent numbers that can "fence-in"
+                 *a particular value.
+                 *
+                 *Works as expected.
+                 */
+				//If the position is still blank, try next algo.
+				if(so[posy][posx]==0)
 				{
                     int a = posy%3;
                     int b = posx%3;
@@ -170,18 +193,22 @@ int main ()
 									if (so[posy+(0)][posx+ (-b -b/2 +2)] != 0 &&
 										so[posy+(0)][posx+ (-2*b + b/2 +1)] != 0)
 									{
+									    //|_ _ _|_ 3 _|_ _ _|
+									    //|2 x 1|_ _ _|_ _ _|
+									    //|_ _ _|_ _ _|3 _ _|
 										so[posy][posx] = num;
 									}
-								}
-							}
-							if (x1)
-							{
-								if (x2)
-								{
-									if (y2)
+									else if (y2)
 									{
 										if (so[posy+(0)][posx+ (-2*b + b/2 +1)] != 0)
 										{
+										    //|_ _ _|_ 3 _|_ _ _|
+                                            //|_ x 2|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|3 _ _|
+                                            //___________________
+                                            //|_ _ _|_ _ _|_ _ _|
+                                            //|3 _ _|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|_ _ _|
 											so[posy][posx] = num;
 										}
 									}
@@ -189,20 +216,53 @@ int main ()
 									{
 										if (so[posy+(0)][posx+ (-b -b/2 +2)] != 0)
 										{
+										    //|_ _ _|_ 3 _|_ _ _|
+                                            //|2 x _|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|3 _ _|
+                                            //___________________
+                                            //|_ _ _|_ _ _|_ _ _|
+                                            //|_ _ 3|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|_ _ _|
 											so[posy][posx] = num;
 										}
 									}
 								}
 							}
-							////////////////////////////
 							if (y1)
 							{
 								if (y2)
 								{
-									if (x2)
+								    if (so[posy+(-2*a + a/2 +1)][posx+ (0)] != 0 &&
+                                        so[posy+(-a -a/2 +2)][posx+ (0)] != 0)
+									{
+									    //|_ 2 _|_ _ _|_ _ _|
+                                        //|_ x _|_ _ _|_ _ _|
+                                        //|_ 1 _|_ _ _|_ _ _|
+                                        //___________________
+                                        //|_ _ _|_ _ _|_ _ _|
+                                        //|3 _ _|_ _ _|_ _ _|
+                                        //|_ _ _|_ _ _|_ _ _|
+                                        //___________________
+                                        //|_ _ _|_ _ _|_ _ _|
+                                        //|_ _ 3|_ _ _|_ _ _|
+                                        //|_ _ _|_ _ _|_ _ _|
+										so[posy][posx] = num;
+									}
+									else if (x2)
 									{
 										if (so[posy+(-2*a + a/2 +1)][posx+ (0)] != 0)
 										{
+										    //|_ _ _|_ 3 _|_ _ _|
+                                            //|_ x _|_ _ _|_ _ _|
+                                            //|_ 2 _|_ _ _|_ _ _|
+                                            //___________________
+                                            //|_ _ _|_ _ _|_ _ _|
+                                            //|3 _ _|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|_ _ _|
+                                            //___________________
+                                            //|_ _ _|_ _ _|_ _ _|
+                                            //|_ _ 3|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|_ _ _|
 											so[posy][posx] = num;
 										}
 									}
@@ -210,19 +270,19 @@ int main ()
 									{
 										if (so[posy+(-a -a/2 +2)][posx+ (0)] != 0)
 										{
+										    //|_ 2 _|_ _ _|_ _ _|
+                                            //|_ x _|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|3 _ _|
+                                            //___________________
+                                            //|_ _ _|_ _ _|_ _ _|
+                                            //|3 _ _|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|_ _ _|
+                                            //___________________
+                                            //|_ _ _|_ _ _|_ _ _|
+                                            //|_ _ 3|_ _ _|_ _ _|
+                                            //|_ _ _|_ _ _|_ _ _|
 											so[posy][posx] = num;
 										}
-									}
-								}
-							}
-							if (y1)
-							{
-								if (y2)
-								{
-									if (so[posy+(-2*a + a/2 +1)][posx+ (0)] != 0 &&
-                                        so[posy+(-a -a/2 +2)][posx+ (0)] != 0)
-									{
-										so[posy][posx] = num;
 									}
 								}
 							}
@@ -244,80 +304,3 @@ int main ()
 	//system ("PAUSE");
 	return 0;
 }
-
-//NOT IMPORTANT FUNCTIONS:
-//				//////////////Filling in the blank of a cell///////////////// WORKS
-//				/*
-//                 *Another simpel filling in the blank
-//                 *
-//                 *
-//				 */
-//                //If the position is still blank, try next algo.
-//                if(so[posy][posx]==0)
-//                {
-//					bool LastCel, celtest;
-//					ifonlyZeroinCEL (so, posy, posx, LastCel);
-//
-//					if (LastCel)//if it is the only blank space in a cell
-//					{
-//						for (int num = 1; num < 10; num ++)
-//						{
-//							searchfullCEL (so, num, posy, posx, celtest);
-//							if (!celtest)//if num not in cell
-//							{
-//								so[posy][posx] = num;
-//							}
-//							celtest = false;
-//						}
-//					}
-//
-//					LastCel = false;
-//                }
-//                //////////////////////////////////////////////////////////////
-//
-//                /////////////////////FILL IN THE BLANK OF ROW////////////////// WORKS
-//                if(so[posy][posx]==0)//If the position is still blank, try next algo.
-//                {
-//					bool LastCel, celtest;
-//					ifonlyZeroinY  (so, posy, posx, LastCel);
-//
-//					if (LastCel)//if it is the only blank space in a cell
-//					{
-//						for (int num = 1; num < 10; num ++)
-//						{
-//							searchY(so, num, posy, posx, celtest);
-//							if (!celtest)//if num not in cell
-//							{
-//								so[posy][posx] = num;
-//							}
-//							celtest = false;
-//						}
-//					}
-//
-//					LastCel = false;
-//                }
-//                //////////////////////////////////////////////////////////
-//
-//                /////////////////////FILL IN THE BLANK OF COL//////////////////WORKS
-//                if(so[posy][posx]==0)//If the position is still blank, try next algo.
-//                {
-//					bool LastCel, celtest;
-//					ifonlyZeroinX  (so, posy, posx, LastCel);
-//
-//					if (LastCel)//if it is the only blank space in a cell
-//					{
-//						for (int num = 1; num < 10; num ++)
-//						{
-//							searchX(so, num, posy, posx, celtest);
-//							if (!celtest)//if num not in cell
-//							{
-//								so[posy][posx] = num;
-//							}
-//							celtest = false;
-//						}
-//					}
-//
-//					LastCel = false;
-//                }
-//                //////////////////////////////////////////////////////////
-//

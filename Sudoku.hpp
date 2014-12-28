@@ -32,16 +32,6 @@ void searchCEL (int m[][9], int num, int  posy, int  posx, bool & cel);
 
 //-----------------------------------------------------------------------------
 /*
- *Given a blank spot in a matrix with specific x & y coordinates,
- *determin if it is the only blank in that cell/column/row. If
- *it is the only blank, we know exactly which number it is.
- */
-void ifonlyZeroinY (int m[][9], int  posy, int  posx, bool & y);
-void ifonlyZeroinX (int m[][9], int  posy, int  posx, bool & x);
-void ifonlyZeroinCEL (int m[][9], int  posy, int  posx, bool & cel);
-
-//-----------------------------------------------------------------------------
-/*
  *Given a 3x3 matrix and a number,
  *determin if the number is located somewhere in that 3x3 cell
  *(does a complete search of the cell). If it is found, return

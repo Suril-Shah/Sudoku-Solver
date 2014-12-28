@@ -43,21 +43,6 @@ void searchY (int m[][9], int num, int  posy, int  posx, bool & y)
 	   if (m[b][posx]== num)
 		   y = true;
 }
-//-----------------------------------------------------------------------------
-void ifonlyZeroinY (int m[][9], int  posy, int  posx, bool & y)
-{
-   int total = 0;
-   for (int b = (posy+1); b < 9; b++)
-	   if (m[b][posx] != 0)
-		   total ++;
-
-   for (int b = (posy-1); b > -1; b--)
-	   if (m[b][posx] != 0)
-		   total ++;
-
-   if (total == 8)
-      y = true;
-}
 //-----------------------------SEARCHING IN THE X------------------------------
 //-----------------------------------------------------------------------------
 void searchX (int m[][9], int num, int  posy, int  posx, bool & x)
@@ -69,21 +54,6 @@ void searchX (int m[][9], int num, int  posy, int  posx, bool & x)
    for (int b = posx-1; b > -1; b--)//right of the box
 	   if (m[posy][b]== num)
 		   x = true;
-}
-//-----------------------------------------------------------------------------
-void ifonlyZeroinX (int m[][9], int  posy, int  posx, bool & x)
-{
-   int total = 0;
-   for (int b = posx+1; b <9; b++)
-	   if (m[posy][b] != 0)
-		   total ++;
-
-   for (int b = posx-1; b > -1; b--)
-	   if (m[posy][b] != 0)
-		   total ++;
-
-   if (total == 8)
-      x = true;
 }
 //-----------------------------SEARCHING EACH CELL-----------------------------
 //-----------------------------------------------------------------------------
@@ -123,25 +93,6 @@ void searchfullCEL (int m[][9], int num, int  posy, int  posx, bool & cel)
 				//(m[posy+ (-a -a/2 +2)][posx+ (0)] != num &&
 				// m[posy+ (-a -a/2 +2)][posx+ (0)] != 0)
 	   )
-
-	{
-		cel = true;
-	}
-}
-//-----------------------------------------------------------------------------
-void ifonlyZeroinCEL (int m[][9], int  posy, int  posx, bool & cel)
-{
-	int a = posy%3, b = posx%3;
-
-	if (m[posy+(-2*a + a/2 +1)][posx+(-2*b + b/2 +1)] != 0 &&
-		m[posy+(-2*a + a/2 +1)][posx+(-b -b/2 +2)] != 0 &&
-		m[posy+(-a -a/2 +2)][posx+(-2*b + b/2 +1)] != 0 &&
-		m[posy+(-a -a/2 +2)][posx+(-b -b/2 +2)] != 0 &&
-
-		m[posy+(0)][posx+ (-b -b/2 +2)] != 0&&
-		m[posy+(0)][posx+ (-2*b + b/2 +1)] != 0 &&
-		m[posy+(-2*a + a/2 +1)][posx+ (0)] != 0 &&
-		m[posy+(-a -a/2 +2)][posx+ (0)] != 0)
 
 	{
 		cel = true;
